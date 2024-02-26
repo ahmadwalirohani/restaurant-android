@@ -1,0 +1,9 @@
+{
+  "appId": "com.ahmadwalirohani.app",
+  "appName": "Restaurant POS",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "http",
+    "hostname": "localhost:9000"
+  }
+}

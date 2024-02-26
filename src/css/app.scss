@@ -1,0 +1,16 @@
+// app global css in SCSS form
+label.center > .q-field__inner > .q-field__control > .q-field__control-container > input{
+  text-align: center !important;
+  -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+label.center > .q-field__inner > .q-field__control > .q-field__control-container > input::-webkit-inner-spin-button,
+label.center > .q-field__inner > .q-field__control > .q-field__control-container > input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
