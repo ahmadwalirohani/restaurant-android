@@ -17,15 +17,15 @@ const errorMsg = ref(null);
 const router = useRouter();
 const $q = useQuasar();
 const form = reactive({
-  email: "",
+  name: "",
   password: "",
   remember: false,
   loading: false,
 });
 const validate = reactive({
-  email: false,
+  name: false,
   password: false,
-  emailMsg: "",
+  nameMsg: "",
   passwordMsg: "",
   loading: false,
 });
@@ -33,8 +33,8 @@ const validate = reactive({
 const submit = () => {
   form.loading = true;
   axios
-    .post("http://192.168.10.2/api/auth/login", {
-      email: form.email,
+    .post("http://dev.product-processing.com/api/auth/login", {
+      name: form.name,
       password: form.password,
       remember: form.remember,
     })
@@ -82,16 +82,15 @@ const submit = () => {
       <q-card-section>
         <form @submit.prevent="submit" class="q-gutter-md">
           <q-input
-            ref="emailRef"
-            :error="validate.email"
+            ref="nameRef"
+            :error="validate.name"
             filled
-            v-model="form.email"
-            label="Email"
+            v-model="form.name"
+            label="name"
             color="dark"
-            type="email"
           >
             <template v-slot:error>
-              {{ validate.emailMsg }}
+              {{ validate.nameMsg }}
             </template>
           </q-input>
           <q-input

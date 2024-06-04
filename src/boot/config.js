@@ -1,3 +1,3 @@
 export default {
-  apiUrl: process.env.DEV ? "http://192.168.10.2" : "",
+  apiUrl: process.env.DEV ? "http://dev.product-processing.com" : "",
 };

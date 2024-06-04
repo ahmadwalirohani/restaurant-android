@@ -4,11 +4,31 @@
       <div class="col-12">
         <q-scroll-area style="width: 100%; height: 50px">
           <q-btn-toggle
-            v-model="ReportModel.r_item_filter"
+            v-model="ReportModel.mainr_item_filter"
             style="width: max-content; margin-top: 5px"
             toggle-color="secondary"
             color="grey-8"
-            :options="ReservableItems"
+            :options="MainRItems"
+            @update:model-value="ReportModel.r_item_filter = '*'"
+          ></q-btn-toggle>
+        </q-scroll-area>
+      </div>
+      <div class="col-12">
+        <q-scroll-area style="width: 100%; height: 50px">
+          <q-btn-toggle
+            v-model="ReportModel.r_item_filter"
+            style="width: max-content"
+            toggle-color="secondary"
+            color="grey-8"
+            :options="
+              ReservableItems.filter((r) =>
+                ReportModel.mainr_item_filter == '*'
+                  ? true
+                  : r.value == '*'
+                  ? true
+                  : r.type == ReportModel.mainr_item_filter
+              )
+            "
           ></q-btn-toggle>
         </q-scroll-area>
       </div>
@@ -422,6 +442,7 @@ const ReportModel = reactive({
   DetailsDialog: false,
   ReserveItemsDialog: false,
   r_item_filter: "*",
+  mainr_item_filter: "*",
   r_items: [],
   ResetModel: function () {
     this.reason = null;
@@ -433,6 +454,7 @@ const ReportModel = reactive({
 });
 
 const ReservableItems = ref([]);
+const MainRItems = ref([]);
 
 const PendingOrders = ref([]);
 const OrderDetails = ref([]);
@@ -465,29 +487,30 @@ const GetOrderReservedItemFn = (r_items) => {
   if (r_items.length == 0)
     return {
       item: "",
-      image_url: "http://192.168.10.2/storage/photos/null-reserve-item.png",
+      image_url:
+        "http://dev.product-processing.com/storage/photos/null-reserve-item.png",
     };
 
   let image_url = "";
   const item = r_items[0].r_item;
   switch (item.type) {
     case "Room":
-      image_url = "http://192.168.10.2/bed.png";
+      image_url = "http://dev.product-processing.com/bed.png";
       break;
     case "Table":
-      image_url = "http://192.168.10.2/table.png";
+      image_url = "http://dev.product-processing.com/table.png";
       break;
     case "Cafe":
-      image_url = "http://192.168.10.2/cafe.png";
+      image_url = "http://dev.product-processing.com/cafe.png";
       break;
     case "VIP Room":
-      image_url = "http://192.168.10.2/vip.png";
+      image_url = "http://dev.product-processing.com/vip.png";
       break;
     case "Hall":
-      image_url = "http://192.168.10.2/conference.png";
+      image_url = "http://dev.product-processing.com/conference.png";
       break;
     case "Home":
-      image_url = "http://192.168.10.2/house.png";
+      image_url = "http://dev.product-processing.com/house.png";
   }
 
   return {
@@ -590,6 +613,7 @@ onBeforeMount(async () => {
             value: "*",
             label: "All",
           },
+
           ...Response.data.data.map((item) => {
             return {
               value: item.id,
@@ -600,6 +624,18 @@ onBeforeMount(async () => {
               status: item.status == "Available" ? 1 : 0,
               type: item.type,
               id: item.id,
+            };
+          }),
+        ];
+
+        const set = new Set([...Response.data.data.map((i) => i.type)]);
+
+        MainRItems.value = [
+          { value: "*", label: "All" },
+          ...Array.from(set.values()).map((item, index) => {
+            return {
+              value: item,
+              label: item,
             };
           }),
         ];
@@ -744,6 +780,14 @@ const onSubmit = () => {
           };
         }),
         price: ModelForm.item.price,
+        total_price:
+          ModelForm.item.ingredients.length > 0
+            ? ModelForm.item.ingredients.reduce(
+                (p, c) => p + (Number(c.price) + Number(c.profit) * c.quantity),
+                0
+              )
+            : Number(ModelForm.item.price.price) +
+              Number(ModelForm.item.price.profit),
       }
     );
 
@@ -810,7 +854,7 @@ const FilterOrdersFn = (order) => {
               .toLowerCase()
               .indexOf(ReportModel.filter.toString().toLowerCase()) > -1) ||
           order.order_no == ReportModel.filter
-      : true;
+      : order.r_items[0]?.r_item?.type == ReportModel.mainr_item_filter;
   } else if (ReportModel.r_item_filter != "*") {
     return (
       order.r_items.length > 0 &&
@@ -867,6 +911,7 @@ const DeleteOrderItem = (item, index) => {
       item_id: item.id,
       order_id: ReportModel.order_id,
       wantsData: false,
+      total_price: item.quantity * item.price,
     }
   );
 

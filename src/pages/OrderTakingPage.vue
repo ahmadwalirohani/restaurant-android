@@ -335,7 +335,12 @@ const StoreOrderFn = () => {
         _method_name: isEdit ? "edit_order" : "store_new_order",
         _validation_class: "CreateOrderRequest",
       },
-      Object.assign({}, FormModel)
+      Object.assign({}, FormModel, {
+        total_amount: FormModel.selected_items.reduce(
+          (p, c) => p + +(c.price.price * c.quantity),
+          0
+        ),
+      })
     );
 
     api
