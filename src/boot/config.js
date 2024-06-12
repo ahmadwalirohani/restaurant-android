@@ -1,3 +1,3 @@
 export default {
-  apiUrl: process.env.DEV ? "http://dev.product-processing.com" : "",
+  apiUrl: process.env.DEV ? "https://api.walishifahospital.com/" : "",
 };

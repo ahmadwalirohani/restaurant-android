@@ -488,29 +488,29 @@ const GetOrderReservedItemFn = (r_items) => {
     return {
       item: "",
       image_url:
-        "http://dev.product-processing.com/storage/photos/null-reserve-item.png",
+        "https://api.walishifahospital.com//storage/photos/null-reserve-item.png",
     };
 
   let image_url = "";
   const item = r_items[0].r_item;
   switch (item.type) {
     case "Room":
-      image_url = "http://dev.product-processing.com/bed.png";
+      image_url = "https://api.walishifahospital.com//bed.png";
       break;
     case "Table":
-      image_url = "http://dev.product-processing.com/table.png";
+      image_url = "https://api.walishifahospital.com//table.png";
       break;
     case "Cafe":
-      image_url = "http://dev.product-processing.com/cafe.png";
+      image_url = "https://api.walishifahospital.com//cafe.png";
       break;
     case "VIP Room":
-      image_url = "http://dev.product-processing.com/vip.png";
+      image_url = "https://api.walishifahospital.com//vip.png";
       break;
     case "Hall":
-      image_url = "http://dev.product-processing.com/conference.png";
+      image_url = "https://api.walishifahospital.com//conference.png";
       break;
     case "Home":
-      image_url = "http://dev.product-processing.com/house.png";
+      image_url = "https://api.walishifahospital.com//house.png";
   }
 
   return {
