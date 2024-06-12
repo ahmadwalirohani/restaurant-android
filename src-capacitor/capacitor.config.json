@@ -3,6 +3,7 @@
   "appName": "Restaurant POS",
   "webDir": "www",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "http",
+    "hostname": "localhost:9000"
   }
 }
