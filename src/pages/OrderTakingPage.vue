@@ -412,7 +412,7 @@ const AddToCartFn = (item) => {
           return {
             id: i.id,
             name: i.name,
-            price: Number(i.price) + Number(i.profit),
+            price: Number(i.price),
             profit: Number(i.profit),
             quantity: i.quantity || 1,
             item: i.is_stock_item
@@ -460,7 +460,7 @@ const UpdateItemQuantityFn = (val, item) => {
             return {
               id: i.id,
               name: i.name,
-              price: Number(i.price) + Number(i.profit),
+              price: Number(i.price),
               profit: Number(i.profit),
               quantity: i.quantity || 1,
               item: i.is_stock_item
