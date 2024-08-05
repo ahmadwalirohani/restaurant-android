@@ -33,7 +33,7 @@ const validate = reactive({
 const submit = () => {
   form.loading = true;
   axios
-    .post("https://api.walishifahospital.com/api/auth/login", {
+    .post("https://api.ghanamrestaurant.com/api/auth/login", {
       name: form.name,
       password: form.password,
       remember: form.remember,

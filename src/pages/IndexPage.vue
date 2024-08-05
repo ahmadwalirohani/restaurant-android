@@ -488,29 +488,29 @@ const GetOrderReservedItemFn = (r_items) => {
     return {
       item: "",
       image_url:
-        "https://api.walishifahospital.com/storage/photos/null-reserve-item.png",
+        "https://api.ghanamrestaurant.com/storage/photos/null-reserve-item.png",
     };
 
   let image_url = "";
   const item = r_items[0].r_item;
   switch (item.type) {
     case "Room":
-      image_url = "https://api.walishifahospital.com/bed.png";
+      image_url = "https://api.ghanamrestaurant.com/bed.png";
       break;
     case "Table":
-      image_url = "https://api.walishifahospital.com/table.png";
+      image_url = "https://api.ghanamrestaurant.com/table.png";
       break;
     case "Cafe":
-      image_url = "https://api.walishifahospital.com/cafe.png";
+      image_url = "https://api.ghanamrestaurant.com/cafe.png";
       break;
     case "VIP Room":
-      image_url = "https://api.walishifahospital.com/vip.png";
+      image_url = "https://api.ghanamrestaurant.com/vip.png";
       break;
     case "Hall":
-      image_url = "https://api.walishifahospital.com/conference.png";
+      image_url = "https://api.ghanamrestaurant.com/conference.png";
       break;
     case "Home":
-      image_url = "https://api.walishifahospital.com/house.png";
+      image_url = "https://api.ghanamrestaurant.com/house.png";
   }
 
   return {
