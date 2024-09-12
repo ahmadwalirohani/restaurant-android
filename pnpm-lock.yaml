@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@capacitor/device':
+    specifier: ^6.0.1
+    version: 6.0.1(@capacitor/core@6.1.2)
   '@quasar/extras':
     specifier: ^1.16.9
     version: 1.16.9
@@ -111,6 +114,20 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@capacitor/core@6.1.2:
+    resolution: {integrity: sha512-xFy1/4qLFLp5WCIzIhtwUuVNNoz36+V7/BzHmLqgVJcvotc4MMjswW/TshnPQaLLujEOaLkA4h8ZJ0uoK3ImGg==}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
+  /@capacitor/device@6.0.1(@capacitor/core@6.1.2):
+    resolution: {integrity: sha512-Tlz67DAO5GKb5YAfupXiENZxDww6mHnG9iKI+8D5SVF82VLpEv5r9qwKtiounuQB2y2HWiHV8tlOk7DqnLVUqQ==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+    dependencies:
+      '@capacitor/core': 6.1.2
+    dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.56.0):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -3700,7 +3717,6 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-    dev: true
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
