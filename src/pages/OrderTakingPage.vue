@@ -111,15 +111,23 @@
               <q-checkbox
                 v-model="item.is_selected"
                 @update:model-value="
-                  $event
-                    ? FormModel.r_items.push({
+                  ($event) => {
+                    if ($event) {
+                      FormModel.r_items.push({
                         id: item.id,
                         price: item.price,
-                      })
-                    : FormModel.r_items.splice(
+                      });
+                      ReservableItem = ReservableItem.map((r, i) => ({
+                        ...r,
+                        is_selected: i != index ? false : $event,
+                      }));
+                    } else {
+                      FormModel.r_items.splice(
                         FormModel.r_items.findIndex((i) => i.id == item.id),
                         1
-                      )
+                      );
+                    }
+                  }
                 "
                 color="secondary"
               />
@@ -169,9 +177,8 @@
                     {{ item.name }}
                   </div>
                   <span>
-                    Price :{{
-                      new Intl.NumberFormat("en").format(item.price.price)
-                    }}
+                    Price :
+                    {{ new Intl.NumberFormat("en").format(item.price.price) }}
                   </span>
                   <br />
                   <q-btn-group flat>
@@ -316,6 +323,7 @@ import { ref, onBeforeMount, reactive } from "vue";
 import { api } from "src/boot/axios";
 import { SendActionRequest, SendResourceRequest } from "src/boot/helpers";
 import { useQuasar } from "quasar";
+import PrintOrderBill from "./PrintOrderBill";
 
 const $quasar = useQuasar();
 const Items = ref([]);
@@ -348,6 +356,7 @@ const StoreOrderFn = () => {
       .then((Response) => {
         localStorage.setItem("system_info", JSON.stringify(Response.data));
 
+        PrintSlipFn(Config.payload);
         FormModel.ClearModel();
 
         DetailsDialog.value = false;
@@ -587,6 +596,65 @@ function sortByKey(array, key) {
     return x < y ? -1 : x > y ? 1 : 0;
   });
 }
+
+const PrintSlipFn = (order) => {
+  PrintOrderBill(
+    {
+      customer: "Walk-in",
+      user: JSON.parse(localStorage.getItem("userData")).name,
+      bill_no: JSON.parse(localStorage.getItem("system_info"))?.order_no,
+      r_item: ReservableItem.value.filter(
+        (r) => r.id == order.r_items[0]?.id
+      )[0]?.name,
+      cop: order.count_of_person,
+      remarks: order.remarks,
+      is_pick_order: false,
+      phone: order?.phone,
+      address: order?.address,
+    },
+    order.selected_items.map((item) => {
+      return {
+        name: item.name,
+        quantity: item.quantity,
+      };
+    })
+  );
+};
+
+const GetOrderReservedItemFn = (r_items) => {
+  if (r_items.length == 0)
+    return {
+      item: "",
+      image_url: "http://192.168.10.2/storage/photos/null-reserve-item.png",
+    };
+
+  let image_url = "";
+  const item = r_items[0].r_item;
+  switch (item.type) {
+    case "Room":
+      image_url = "http://192.168.10.2/bed.png";
+      break;
+    case "Table":
+      image_url = "http://192.168.10.2/table.png";
+      break;
+    case "Cafe":
+      image_url = "http://192.168.10.2/cafe.png";
+      break;
+    case "VIP Room":
+      image_url = "http://192.168.10.2/vip.png";
+      break;
+    case "Hall":
+      image_url = "http://192.168.10.2/conference.png";
+      break;
+    case "Home":
+      image_url = "http://192.168.10.2/house.png";
+  }
+
+  return {
+    item: item.name,
+    image_url: image_url,
+  };
+};
 </script>
 <style scoped>
 .r_list {
