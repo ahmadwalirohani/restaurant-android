@@ -325,6 +325,10 @@ import { SendActionRequest, SendResourceRequest } from "src/boot/helpers";
 import { useQuasar } from "quasar";
 import PrintOrderBill from "./PrintOrderBill";
 
+const incDecCount = JSON.parse(localStorage.getItem("system_info"))
+  ?.is_item_inc_dec_integer_based
+  ? 1
+  : 0.5;
 const $quasar = useQuasar();
 const Items = ref([]);
 const ItemCategories = ref([]);
@@ -356,7 +360,11 @@ const StoreOrderFn = () => {
       .then((Response) => {
         localStorage.setItem("system_info", JSON.stringify(Response.data));
 
-        PrintSlipFn(Config.payload);
+        if (
+          JSON.parse(localStorage.getItem("system_info"))
+            .is_order_printable_via_mobile
+        )
+          PrintSlipFn(Config.payload);
         FormModel.ClearModel();
 
         DetailsDialog.value = false;
@@ -406,7 +414,7 @@ const isOrderModelValid = () => {
 };
 
 const AddToCartFn = (item) => {
-  item.to_sale = Number(item.to_sale || 0) + 1;
+  item.to_sale = Number(item.to_sale || 0) + incDecCount;
   const isItem = FormModel.selected_items.findIndex((i) => i.id == item.id);
   if (isItem === -1)
     FormModel.selected_items.push({
@@ -437,7 +445,7 @@ const AddToCartFn = (item) => {
 };
 
 const RemoveFromCartFn = (item) => {
-  item.to_sale = Number(item.to_sale || 0) - 0.5;
+  item.to_sale = Number(item.to_sale || 0) - incDecCount;
   const isItem = FormModel.selected_items.findIndex((i) => i.id == item.id);
   if (isItem === -1)
     FormModel.selected_items.push({
@@ -616,6 +624,7 @@ const PrintSlipFn = (order) => {
       return {
         name: item.name,
         quantity: item.quantity,
+        price: +item.price.price,
       };
     })
   );

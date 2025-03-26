@@ -161,6 +161,15 @@
         <q-card-section class="row items-center">
           <q-avatar icon="gpp_good" color="dark" text-color="white" />
           <span class="q-ml-sm">Are you sure order is ready!</span>
+          <q-banner
+            inline-actions
+            rounded
+            dense
+            class="bg-orange text-dark q-ml-xl"
+            v-if="SystemInfos.is_direct_to_sale_via_mobile"
+          >
+            Order will be paid directly
+          </q-banner>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -453,6 +462,8 @@ const ReportModel = reactive({
   },
 });
 
+const SystemInfos = JSON.parse(localStorage.getItem("system_info"));
+
 const ReservableItems = ref([]);
 const MainRItems = ref([]);
 
@@ -563,6 +574,42 @@ const CancelOrderFn = () => {
 const submitOrderFn = () => {
   ReportModel.loading = true;
 
+  const items = PendingOrders.value[ReportModel.order_index].details.map(
+    (item) => {
+      return {
+        id: item.item.id,
+        ingredients: item.sub_details.map((i) => {
+          return {
+            id: i.id,
+            item: i.stock_item_id ? { id: i.stock_item_id } : i.name,
+            name: i.name,
+            profit: i.profit,
+            quantity: i.quantity,
+            price: i.price,
+            order_id: i.id,
+          };
+        }),
+        quantity: item.quantity,
+        price: item.item.price,
+        type: item.item.type,
+        name: item.item.name,
+        image: item.item.image,
+      };
+    }
+  );
+
+  const profit_amount = items.reduce(
+    (p, c) =>
+      p +
+      Number(
+        c.ingredients.length
+          ? c.ingredients.reduce((ip, ic) => ip + ic.profit * ic.quantity, 0) *
+              c.quantity
+          : c.price.profit * c.quantity
+      ),
+    0
+  );
+
   const Config = SendActionRequest(
     {
       _class: "POSActions",
@@ -570,6 +617,9 @@ const submitOrderFn = () => {
     },
     {
       order_id: ReportModel.order_id,
+      is_paid: SystemInfos.is_direct_to_sale_via_mobile,
+      items,
+      profit_amount,
     }
   );
 
@@ -579,6 +629,7 @@ const submitOrderFn = () => {
       PendingOrders.value.splice(ReportModel.order_index, 1);
 
       ReportModel.ResetModel();
+
       $q.notify({
         message: "Order Has Been Submited",
         position: "top",

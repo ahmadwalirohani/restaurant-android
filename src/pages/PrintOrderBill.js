@@ -85,6 +85,13 @@ td {
   <body>
   <div class="receipt" id="printOrderBill" dir="rtl" >
     <div class="header">
+     <center>
+${
+  SystemInfos.is_logo_enabled_in_prints
+    ? ` <img width="70px" height="70px" src="http://192.168.10.2${SystemInfos.company_logo}" />`
+    : ""
+}
+    </center>
       <h2>${SystemInfos.company_name}</h2>
       <br />
       <h3>${SystemInfos.company_phone}</h3>
@@ -136,6 +143,7 @@ td {
             <th>#</th>
             <th>جنس</th>
             <th>مقدار</th>
+              ${SystemInfos.is_order_price_print ? "<th>قیمت</th>" : ""}
           </tr>
         </thead>
         <tbody>
@@ -146,6 +154,11 @@ td {
             <th>${i + 1}</th>
             <th>${item.name}</th>
             <th>${new Intl.NumberFormat("en").format(item.quantity)}</th>
+            ${
+              SystemInfos.is_order_price_print
+                ? ` <th>${new Intl.NumberFormat("en").format(item.price)}</th>`
+                : ""
+            }
           </tr>
               `;
             })
@@ -154,7 +167,7 @@ td {
       </table>
     </div>
     <div class="footer">
-    <p> ${infos.remarks} </p>
+    <p> ${SystemInfos.is_print_remarks_in_order ? infos.remarks : ""} </p>
       <hr />
       <center>
         <b>${SystemInfos.company_address}</b>
@@ -176,5 +189,5 @@ td {
 
   WinPrint.print();
 
-  WinPrint.close();
+  //WinPrint.close();
 }
