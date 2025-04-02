@@ -188,7 +188,8 @@
                       :disable="!item.to_sale || item.to_sale <= 0"
                       icon="remove"
                       dense
-                    ></q-btn>
+                    >
+                    </q-btn>
                     <q-input
                       dense
                       flat
@@ -251,7 +252,35 @@
                   <span class="text-weight-medium"> {{ item.name }} </span>
                 </q-item-label>
                 <q-item-label caption>
-                  Price: <code>{{ item.price.price }}</code>
+                  Price: <code>{{ item.price.price }}</code> &nbsp;
+                  <q-btn
+                    @click="vPrice = Number(item.price?.price)"
+                    dense
+                    icon="edit"
+                    v-if="system_info.is_price_editable_in_sale_order == 1"
+                    size="sm"
+                  >
+                    <q-menu>
+                      <q-input
+                        autofocus
+                        filled
+                        label="Edit Price"
+                        v-model="vPrice"
+                        type="number"
+                        @update:model-value="
+                          ($event) => {
+                            let index = FormModel.selected_items.findIndex(
+                              (i) => i.id == item.id
+                            );
+                            FormModel.selected_items[index].price = {
+                              ...FormModel.selected_items[index].price,
+                              price: Number($event),
+                            };
+                          }
+                        "
+                      />
+                    </q-menu>
+                  </q-btn>
                 </q-item-label>
                 <q-item-label caption>
                   Quantity: <code>{{ item.quantity }}</code>
@@ -325,11 +354,15 @@ import { SendActionRequest, SendResourceRequest } from "src/boot/helpers";
 import { useQuasar } from "quasar";
 import PrintOrderBill from "./PrintOrderBill";
 
-const incDecCount = JSON.parse(localStorage.getItem("system_info"))
-  ?.is_item_inc_dec_integer_based
-  ? 1
-  : 0.5;
+const system_info = JSON.parse(localStorage.getItem("system_info"));
+const incDecCount =
+  JSON.parse(localStorage.getItem("system_info"))
+    .is_item_inc_dec_integer_based == 1
+    ? 1
+    : 0.5;
+
 const $quasar = useQuasar();
+const vPrice = ref(null);
 const Items = ref([]);
 const ItemCategories = ref([]);
 const ReservableItem = ref([]);

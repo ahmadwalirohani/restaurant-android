@@ -221,6 +221,11 @@
                 @filter="filterItemFn"
                 :options="StockItems"
                 v-model="ModelForm.item"
+                @update:model-value="
+                  ($event) => {
+                    ModelForm.v_price = $event.price;
+                  }
+                "
                 :readonly="ModelForm.is_update"
                 input-debounce="0"
                 :error="ModelForm.Validation.item"
@@ -272,7 +277,22 @@
               </q-input>
             </div>
 
-            <div class="col-7">
+            <div
+              class="col-6"
+              v-if="SystemInfos.is_price_editable_in_sale_order == 1"
+            >
+              <q-input
+                v-if="ModelForm.item != null"
+                label="Price"
+                dense
+                step="0.00001"
+                type="number"
+                filled
+                v-model="ModelForm.v_price.price"
+              />
+            </div>
+
+            <div class="col-6">
               <q-btn-group style="width: 100%">
                 <q-btn
                   :loading="ModelForm.StoreLoading"
@@ -481,10 +501,12 @@ const ModelForm = reactive({
   id: null,
   category: "",
   StoreLoading: false,
+  v_price: { price: null },
   ClearModel: function () {
     this.item = null;
     this.quantity = 1;
     this.is_update = false;
+    this.v_price = { price: null };
     this.id = null;
     this.StoreLoading = false;
   },
@@ -829,15 +851,15 @@ const onSubmit = () => {
             quantity: item.quantity,
           };
         }),
-        price: ModelForm.item.price,
+        price: ModelForm.v_price,
         total_price:
           ModelForm.item.ingredients.length > 0
             ? ModelForm.item.ingredients.reduce(
                 (p, c) => p + (Number(c.price) + Number(c.profit) * c.quantity),
                 0
               )
-            : Number(ModelForm.item.price.price) +
-              Number(ModelForm.item.price.profit),
+            : Number(ModelForm.v_price.price) +
+              Number(ModelForm.v_price.profit),
       }
     );
 
